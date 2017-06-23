@@ -1,4 +1,4 @@
-package com.cmcc.gs.BillingCdrCenter;
+package org.Utils;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
