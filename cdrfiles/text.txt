@@ -1,0 +1,147 @@
+
+
+
+贾  琨( 2017-08-03 16:49:44 )：
+lpush PENDING_00 '{"PRIMARY_KEY": {"USER_NUMBER":"13893190802", "START_TIME":"04-6月 -17", "CHARGING_ID":"503593918", "GGSN_ADDRESS":"DDB1B66A", "REC_SEQ_NO":"31", "SERVICE_CODE":"2000000002"}, "REGION_CODE": "930", "BILL_DATE": "20170721", "USER_NUMBER":"13893190802", "TYPE": "GGPRS", "IMSI":"460003683993482", "IMEI":"3522030600148301", "CDR":{"ACC_ITEM_CODE1":"80200002","ADDUP_RES":"","APN_NI":"CMNET","APN_OI":"","BILL_FLAG":"2","CDR_QUERY_FLAG":"4","CELL_ID":"BD76D10","CHARGE1":"0","CHARGE1_DISC":"2048","CHARGE2":"0","CHARGE2_DISC":"0","CHARGE3":"0","CHARGE3_DISC":"0","CHARGE4_DISC":"0","CHARGING_ID":"503593918","DOWN_VOLUME":"1989077","DR_TYPE":"8305","DURATION":"9","FREE_RES_VAL":"{102935972,90040550,72010000,,23219799503,2048,20170601000000,20170701000000:842557,2097152,1}","GGSN_ADDRESS":"DDB1B66A","HPLMN1":"931","HPLMN2":"931","HPLMN3":"3101","IMEI":"3522030600148301","IMSI":"460003683993482","LAC_ID":"93D4","MNS_TYPE":"2","PARTIAL_NUM":"2","RATE_PROD_ID":"","RATING_RES":"2048","REC_SEQ_NO":"31","RESERVE4":"0,2048","ROAM_TYPE":"0","SERVICE_CODE":"2000000002","SERVICE_ID":"53001","START_TIME":"04-6月 -17","STD_BASIC_CHARGE":"","UP_VOLUME":"108140","USER_NUMBER":"13893190802","VPLMN1":"931","VPLMN2":"931","ORIGINAL_FILE":"N_PGWH520170604.95578"}}'
+rpoplpush HANDLING_00 '{"PRIMARY_KEY": {"USER_NUMBER":"13893190802", "START_TIME":"04-6月 -17", "CHARGING_ID":"503593918", "GGSN_ADDRESS":"DDB1B66A", "REC_SEQ_NO":"31", "SERVICE_CODE":"2000000002"}, "USER_NUMBER":"13893190802", "TYPE": "GGPRS", "IMSI":"460003683993482", "IMEI":"3522030600148301", "CDR":{"ACC_ITEM_CODE1":"80200002","ADDUP_RES":"","APN_NI":"CMNET","APN_OI":"","BILL_FLAG":"2","CDR_QUERY_FLAG":"4","CELL_ID":"BD76D10","CHARGE1":"0","CHARGE1_DISC":"2048","CHARGE2":"0","CHARGE2_DISC":"0","CHARGE3":"0","CHARGE3_DISC":"0","CHARGE4_DISC":"0","CHARGING_ID":"503593918","DOWN_VOLUME":"1989077","DR_TYPE":"8305","DURATION":"9","FREE_RES_VAL":"{102935972,90040550,72010000,,23219799503,2048,20170601000000,20170701000000:842557,2097152,1}","GGSN_ADDRESS":"DDB1B66A","HPLMN1":"931","HPLMN2":"931","HPLMN3":"3101","IMEI":"3522030600148301","IMSI":"460003683993482","LAC_ID":"93D4","MNS_TYPE":"2","PARTIAL_NUM":"2","RATE_PROD_ID":"","RATING_RES":"2048","REC_SEQ_NO":"31","RESERVE4":"0,2048","ROAM_TYPE":"0","SERVICE_CODE":"2000000002","SERVICE_ID":"53001","START_TIME":"04-6月 -17","STD_BASIC_CHARGE":"","UP_VOLUME":"108140","USER_NUMBER":"13893190802","VPLMN1":"931","VPLMN2":"931","ORIGINAL_FILE":"N_PGWH520170604.95578"}}'
+贾  琨( 2017-08-03 16:56:15 )：
+psql -h 10.251.22.63 -p 8432 -d cdr201707 -U cdr
+贾  琨( 2017-08-03 16:53:13 )：
+  528  psql -h 10.251.22.63 -p 8432 -d postgres
+  529  psql -h 10.251.22.63 -p 8432 -d cdr201706 -U cdr
+贾  琨( 2017-08-03 16:56:06 )：
+GGPRS： USER_NUMBER,START_TIME,CHARGING_ID,GGSN_ADDRESS,REC_SEQ_NO,SERVICE_CODE
+GPRS: IMSI,START_TIME,CHARGING_ID,GGSN_ADDRESS,SGSN_ADDRESS
+WLAN: USER_NUMBER,START_TIME,AUTH_TYPE,HOSTSPOT_ID,SEQUENCE_NO,REC_SEQ_NO
+ISMG: USER_NUMBER,START_TIME,SP_CODE,OPER_CODE,SEQUENCE_NO
+KJAVA： USER_NUMBER,START_TIME,SEQUENCE_NO,SP_CODE,OPER_CODE
+STM: USER_NUMBER,START_TIME,SEQUENCE_NO,SERVICE_TYPE,CP_CODE,OPER_CODE,BILL_FLAG,PKG_BUSINESS_CODE
+WAP： USER_NUMBER,START_TIME,SEQUENCE_NO,SP_CODE,SERVICE_CODE
+MMS: USER_NUMBER,START_TIME,SEQUENCE_NO,MM_TYPE,SP_CODE,OPER_CODE
+SMS: USER_NUMBER,START_TIME,SEQUENCE_NO,RECORD_TYPE,OPP_NUMBER
+ADD: USER_NUMBER,OPP_NUMBER,START_TIME,CALL_TYPE
+EXT: ACC_ID,USER_ID,USER_NUMBER,PAY_REL_NUMBER,BEGIN_DATE,ACC_PROD_ID,ITEM_CODE1 -------------
+GSM: IMSI,OPP_NUMBER,START_TIME,CALL_TYPE,RESERVE1,CALL_REFNUM
+VPMN: IMSI,OPP_NUMBER,START_TIME,CALL_TYPE
+PBX: USER_NUMBER,OPP_NUMBER,START_TIME,CALL_TYPE-------
+
+
+贾  琨( 2017-08-03 16:56:23 )：
+set search_path to r930;
+贾  琨( 2017-08-03 16:57:29 )：
+                                Table "r930.cdr_20170721"
+   Column    |         Type          | Modifiers | Storage  | Stats target | Description 
+-------------+-----------------------+-----------+----------+--------------+-------------
+ cdr_id      | character varying(30) | not null  | extended |              | 
+ user_number | character varying(30) | not null  | extended |              | 
+ cdr_type    | character varying(20) | not null  | extended |              | 
+ cdr_record  | json                  |           | extended |              | 
+Indexes:
+    "cdr_20170721_pkey" PRIMARY KEY, btree (cdr_id)
+Child tables: cdr_20170721_0,
+              cdr_20170721_1,
+              cdr_20170721_10,
+              cdr_20170721_11,
+              cdr_20170721_12,
+              cdr_20170721_13,
+              cdr_20170721_14,
+              cdr_20170721_15,
+              cdr_20170721_16,
+              cdr_20170721_17,
+              cdr_20170721_18,
+              cdr_20170721_19,
+              cdr_20170721_2,
+              cdr_20170721_20,
+              cdr_20170721_21,
+              cdr_20170721_22,
+              cdr_20170721_23,
+              cdr_20170721_24,
+              cdr_20170721_25,
+              cdr_20170721_26,
+              cdr_20170721_27,
+              cdr_20170721_28,
+              cdr_20170721_29,
+              cdr_20170721_3,
+              cdr_20170721_30,
+              cdr_20170721_31,
+              cdr_20170721_32,
+              cdr_20170721_33,
+              cdr_20170721_34,
+              cdr_20170721_35,
+              cdr_20170721_36,
+              cdr_20170721_37,
+              cdr_20170721_38,
+              cdr_20170721_39,
+              cdr_20170721_4,
+              cdr_20170721_40,
+              cdr_20170721_41,
+              cdr_20170721_42,
+              cdr_20170721_43,
+              cdr_20170721_44,
+              cdr_20170721_45,
+              cdr_20170721_46,
+              cdr_20170721_47,
+              cdr_20170721_48,
+              cdr_20170721_49,
+              cdr_20170721_5,
+              cdr_20170721_50,
+              cdr_20170721_51,
+              cdr_20170721_52,
+              cdr_20170721_53,
+              cdr_20170721_54,
+              cdr_20170721_55,
+              cdr_20170721_56,
+              cdr_20170721_57,
+              cdr_20170721_58,
+              cdr_20170721_59,
+              cdr_20170721_6,
+              cdr_20170721_60,
+              cdr_20170721_61,
+              cdr_20170721_62,
+              cdr_20170721_63,
+              cdr_20170721_64,
+              cdr_20170721_65,
+              cdr_20170721_66,
+              cdr_20170721_67,
+              cdr_20170721_68,
+              cdr_20170721_69,
+              cdr_20170721_7,
+              cdr_20170721_70,
+              cdr_20170721_71,
+              cdr_20170721_72,
+              cdr_20170721_73,
+              cdr_20170721_74,
+              cdr_20170721_75,
+              cdr_20170721_76,
+              cdr_20170721_77,
+              cdr_20170721_78,
+              cdr_20170721_79,
+              cdr_20170721_8,
+              cdr_20170721_80,
+              cdr_20170721_81,
+              cdr_20170721_82,
+              cdr_20170721_83,
+              cdr_20170721_84,
+              cdr_20170721_85,
+              cdr_20170721_86,
+              cdr_20170721_87,
+              cdr_20170721_88,
+              cdr_20170721_89,
+              cdr_20170721_9,
+              cdr_20170721_90,
+              cdr_20170721_91,
+              cdr_20170721_92,
+              cdr_20170721_93,
+              cdr_20170721_94,
+              cdr_20170721_95,
+              cdr_20170721_96,
+              cdr_20170721_97,
+              cdr_20170721_98,
+              cdr_20170721_99
+贾  琨( 2017-08-03 16:56:47 )：
+cdr201707=# select * from cdr_20170721;
+        cdr_id         | user_number | cdr_type | cdr_record 
+-----------------------+-------------+----------+------------
+ 201707210113893190801 | 13893190801 | GGPRS    | 
+ 201707210113893190802 | 13893190802 | GGPRS    | 
+(2 rows)
